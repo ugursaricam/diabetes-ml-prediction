@@ -74,7 +74,7 @@ na_cols = missing_values_table(df, True)
 missing_vs_target(df, 'Outcome', na_cols)
 
 ##################
-# Adding new features
+# Feature extraction and filling the missing values
 ##################
 
 df.loc[(df['Age'] < 18), 'NEW_AGE_CAT'] = 'young'
@@ -91,18 +91,6 @@ df['Insulin'].mean()
 df.groupby(['NEW_AGE_CAT'])['Insulin'].mean()
 df['Insulin'] = df['Insulin'].fillna(df.groupby('NEW_AGE_CAT')['Insulin'].transform('mean'))
 
-df.loc[(df['Glucose'] > 140), 'NEW_GLUCOSE_140'] = 'YES'
-df.loc[(df['Glucose'] <= 140), 'NEW_GLUCOSE_140'] = 'NO'
-
-df['NEW_GLUCOSE_INSULIN'] = df['Glucose'] * df['Insulin']
-
-df.loc[(df['NEW_GLUCOSE_INSULIN']/405 < 25), 'HOMA_IR'] = 'NO'
-df.loc[(df['NEW_GLUCOSE_INSULIN']/405 >= 25), 'HOMA_IR'] = 'YES'
-
-###################################
-# Filling the missing values
-###################################
-
 df['BloodPressure'].mean()
 df.groupby(['NEW_AGE_CAT'])['BloodPressure'].mean()
 df['BloodPressure'] = df['BloodPressure'].fillna(df.groupby('NEW_AGE_CAT')['BloodPressure'].transform('mean'))
@@ -114,10 +102,6 @@ df['SkinThickness'] = df['SkinThickness'].fillna(df.groupby('NEW_AGE_CAT')['Skin
 df['BMI'].mean()
 df.groupby(['NEW_GLUCOSE_140'])['BMI'].mean()
 df['BMI'] = df['BMI'].fillna(df.groupby('NEW_GLUCOSE_140')['BMI'].transform('mean'))
-
-##################
-# New features
-##################
 
 df.loc[(df['BMI'] >= 30)  & (df['Age'] < 18), 'NEW_AGE_OBESE_CAT'] = 'young_obese'
 df.loc[(df['BMI'] >= 30)  & (df['Age'] >= 18) & (df['Age'] < 35), 'NEW_AGE_OBESE_CAT'] = 'middle_age_obese'
@@ -143,6 +127,14 @@ df['NEW_GLUCOSE_BP'] = df['Glucose'] / df['BloodPressure']
 df['NEW_GLUCOSE_DPF'] = df['Glucose'] / df['DiabetesPedigreeFunction']
 
 df['NEW_GLUCOSE_BMI'] = df['Glucose'] * df['BMI']
+
+df.loc[(df['Glucose'] > 140), 'NEW_GLUCOSE_140'] = 'YES'
+df.loc[(df['Glucose'] <= 140), 'NEW_GLUCOSE_140'] = 'NO'
+
+df['NEW_GLUCOSE_INSULIN'] = df['Glucose'] * df['Insulin']
+
+df.loc[(df['NEW_GLUCOSE_INSULIN']/405 < 25), 'HOMA_IR'] = 'NO'
+df.loc[(df['NEW_GLUCOSE_INSULIN']/405 >= 25), 'HOMA_IR'] = 'YES'
 
 df.head()
 df.shape
@@ -286,6 +278,10 @@ def plot_importance(model, features, save=False):
 plot_importance(rfc, X_train)
 plot_importance(gbc, X_train)
 plot_importance(xgb_model, X_train)
+
+###################################
+# Comparison of ML models
+###################################
 
 ML_Data = pd.DataFrame(columns = ['Model_Name', 'Accuracy'])
 
