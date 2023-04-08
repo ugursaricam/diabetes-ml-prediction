@@ -18,4 +18,5 @@ The dataset has 9 variables:
 9. `outcome`: Class variable (0: No diabetes, 1: Diabetes)
 
 ### Dataset Size
+
 The dataset contains 768 rows and 9 columns.
