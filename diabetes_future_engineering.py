@@ -15,7 +15,7 @@ from sklearn.preprocessing import MinMaxScaler, LabelEncoder, StandardScaler, Ro
 from scipy.stats import norm, skew
 from scipy import stats
 
-df = pd.read_csv('datasets/diabetes.csv')
+df = pd.read_csv('diabetes.csv')
 
 ###################################
 # Understanding the data
